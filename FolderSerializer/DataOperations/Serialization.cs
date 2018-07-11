@@ -1,0 +1,67 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace FolderSerializer.DataOperations
+{
+
+    class FolderSerialization
+    {
+        public void Serialize(string path)
+        {
+            var fs = new FileStream("DataFile.dat", FileMode.Create);
+            
+
+            var formatter = new BinaryFormatter();
+            try
+            {
+
+                formatter.Serialize(fs, new Folder
+                {
+                    Files = this.GetFilesR(path).ToArray(),
+                    Name = Path.GetFileName(path),
+                    SubFolders = this.GetDirectoriesR(path).ToArray()
+                });
+            }
+            catch (SerializationException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Failed to serialize. Reason: " + ex.Message);
+                throw;
+            }
+            finally
+            {
+                fs.Close();
+            }
+        }
+        public IEnumerable<Folder> GetDirectoriesR(string root)
+        {
+            foreach (var dir in System.IO.Directory.GetDirectories(root))
+            {
+                var dirInfo = new DirectoryInfo(dir);
+                var directory = new Folder
+                {
+                    Name = dirInfo.Name,
+                    Files = GetFilesR(dir).ToArray(),
+                    SubFolders = GetDirectoriesR(dir).ToArray()
+                };
+                yield return directory;
+            }
+        }
+
+        public IEnumerable<File> GetFilesR(string dir)
+        {
+            foreach (var file in System.IO.Directory.GetFiles(dir))
+            {
+                var fInfo = new FileInfo(file);
+
+                yield return new File
+                {
+                    Data = System.IO.File.ReadAllBytes(file),
+                    Name = fInfo.Name
+                };
+            }
+        }
+    }
+}
