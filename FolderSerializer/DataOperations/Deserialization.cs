@@ -6,17 +6,17 @@ namespace FolderSerializer.DataOperations
 {
     class FolderDeserialization
     {
-        public void Deserialize()
+        public void Deserialize(string path, string pathToDat)
         {
             Folder data;
-            var fs = new FileStream("DataFile.dat", FileMode.Open);
+            var fs = new FileStream(pathToDat, FileMode.Open);
             
             try
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 data = (Folder)formatter.Deserialize(fs);
-                this.GenerateFolder(data, data.Name);
-                System.Diagnostics.Process.Start(data.Name);
+                this.GenerateFolder(data, $"{path}/{data.Name}");
+                System.Diagnostics.Process.Start($"{path}/{data.Name}");
             }
             catch (SerializationException ex)
             {

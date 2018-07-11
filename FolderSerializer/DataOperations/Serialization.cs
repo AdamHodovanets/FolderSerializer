@@ -9,9 +9,9 @@ namespace FolderSerializer.DataOperations
 
     class FolderSerialization
     {
-        public void Serialize(string path)
+        public void Serialize(string path, string pathToDat)
         {
-            var fs = new FileStream("DataFile.dat", FileMode.Create);
+            var fs = new FileStream(pathToDat, FileMode.Create);
             
 
             var formatter = new BinaryFormatter();
@@ -20,9 +20,9 @@ namespace FolderSerializer.DataOperations
 
                 formatter.Serialize(fs, new Folder
                 {
-                    Files = this.GetFilesR(path).ToArray(),
+                    Files = this.GetFiles(path).ToArray(),
                     Name = Path.GetFileName(path),
-                    SubFolders = this.GetDirectoriesR(path).ToArray()
+                    SubFolders = this.GetDirectories(path).ToArray()
                 });
             }
             catch (SerializationException ex)
@@ -35,7 +35,7 @@ namespace FolderSerializer.DataOperations
                 fs.Close();
             }
         }
-        public IEnumerable<Folder> GetDirectoriesR(string root)
+        public IEnumerable<Folder> GetDirectories(string root)
         {
             foreach (var dir in System.IO.Directory.GetDirectories(root))
             {
@@ -43,14 +43,14 @@ namespace FolderSerializer.DataOperations
                 var directory = new Folder
                 {
                     Name = dirInfo.Name,
-                    Files = GetFilesR(dir).ToArray(),
-                    SubFolders = GetDirectoriesR(dir).ToArray()
+                    Files = GetFiles(dir).ToArray(),
+                    SubFolders = GetDirectories(dir).ToArray()
                 };
                 yield return directory;
             }
         }
 
-        public IEnumerable<File> GetFilesR(string dir)
+        public IEnumerable<File> GetFiles(string dir)
         {
             foreach (var file in System.IO.Directory.GetFiles(dir))
             {

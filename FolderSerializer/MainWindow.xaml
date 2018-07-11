@@ -9,6 +9,7 @@
     <Grid>
         <Button x:Name="Serialization" Content="Serialization.." HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="90" Height="33" Click="Serialization_Click"/>
         <Button x:Name="Deserialization" Content="Deserialization.." HorizontalAlignment="Left" Margin="144,44,0,0" VerticalAlignment="Top" Width="90" Height="33" Click="Deserialization_Click"/>
+        <Button x:Name="datChange" Content="Change default .dat file path" HorizontalAlignment="Left" Margin="0,109,0,0" VerticalAlignment="Top" Width="267" Click="datChange_Click"/>
 
     </Grid>
 </Window>
